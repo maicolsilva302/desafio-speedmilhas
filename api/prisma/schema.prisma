@@ -1,0 +1,138 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum SupplierCode {
+  A
+  B
+  C
+}
+
+enum SupplierStatus {
+  OK
+  EMPTY
+  TIMEOUT
+  ERROR
+  RATE_LIMITED
+}
+
+enum SearchStatus {
+  COMPLETE
+  PARTIAL
+  UNAVAILABLE
+}
+
+enum OrderStatus {
+  CONFIRMED
+}
+
+model Search {
+  id          String @id
+  origin      String @db.VarChar(3)
+  destination String @db.VarChar(3)
+
+  departureDate String @db.VarChar(10)
+
+  status    SearchStatus
+  elapsedMs Int
+
+  cacheExpiresAt DateTime?
+
+  createdAt DateTime @default(now())
+
+  quotes       Quote[]
+  supplierRuns SupplierRun[]
+
+  @@index([origin, destination, departureDate, cacheExpiresAt])
+}
+
+model SupplierRun {
+  id         String         @id
+  searchId   String
+  supplier   SupplierCode
+  status     SupplierStatus
+  httpStatus Int?
+  elapsedMs  Int
+  attempts   Int            @default(1)
+
+  itemsRaw  Int @default(0)
+  itemsKept Int @default(0)
+
+  message String?
+
+  search Search @relation(fields: [searchId], references: [id], onDelete: Cascade)
+
+  @@unique([searchId, supplier])
+}
+
+model Quote {
+  id       String       @id
+  searchId String
+  supplier SupplierCode
+
+  carrier     String  @db.VarChar(40)
+  carrierCode String? @db.VarChar(3)
+
+  miles Int
+
+  taxesBrl Decimal? @db.Decimal(10, 2)
+  currency String   @default("BRL") @db.VarChar(3)
+
+  bookable Boolean @default(true)
+
+  supplierIndex Int
+
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  search Search  @relation(fields: [searchId], references: [id], onDelete: Cascade)
+  orders Order[]
+
+  @@index([searchId, miles])
+}
+
+model Client {
+  id        String   @id @db.VarChar(40)
+  name      String   @db.VarChar(80)
+  createdAt DateTime @default(now())
+
+  orders Order[]
+}
+
+model Order {
+  id String @id
+
+  idempotencyKey String @unique
+
+  requestHash String @db.VarChar(64)
+
+  clientId String @db.VarChar(40)
+
+  quoteId String
+
+  passengerName String @db.VarChar(120)
+
+  passengerDocument String? @db.VarChar(40)
+
+  passengerDocumentType String? @db.VarChar(20)
+
+  passengerEmail String? @db.VarChar(160)
+
+  miles         Int
+  taxesBrl      Decimal @db.Decimal(10, 2)
+  serviceFeeBrl Decimal @db.Decimal(10, 2)
+
+  status    OrderStatus @default(CONFIRMED)
+  createdAt DateTime    @default(now())
+
+  client Client @relation(fields: [clientId], references: [id])
+  quote  Quote  @relation(fields: [quoteId], references: [id])
+
+  @@index([clientId, createdAt])
+  @@index([quoteId])
+}

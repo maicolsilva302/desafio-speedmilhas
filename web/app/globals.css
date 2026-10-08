@@ -1,0 +1,58 @@
+/* Tailwind v4: um único import, sem as três diretivas @tailwind da v3.
+ * A configuração vive aqui, no CSS — não existe tailwind.config.js na v4. */
+@import 'tailwindcss';
+
+@theme {
+  /* Azul de marca, usado com parcimônia: destaque de preço e ações. */
+  --color-brand-50: #eff4ff;
+  --color-brand-100: #dbe6fe;
+  --color-brand-600: #2563eb;
+  --color-brand-700: #1d4ed8;
+
+  /* Âmbar é a cor do resultado parcial.
+   *
+   * A escolha importa: resultado parcial NÃO é erro. É uma lista boa com uma
+   * ressalva de completude. Vermelho faria o usuário achar que a busca falhou
+   * e desistir de uma lista perfeitamente utilizável. */
+  --color-warn-50: #fffbeb;
+  --color-warn-200: #fde68a;
+  --color-warn-700: #b45309;
+  --color-warn-900: #78350f;
+}
+
+/* Números que se comparam entre si precisam alinhar entre si.
+ * `tabular-nums` fixa a largura dos dígitos, então a coluna de milhas fica
+ * legível de cima a baixo — é o que o enunciado pede ao falar em "preço em
+ * milhas fácil de comparar entre elas". */
+.numeros {
+  font-variant-numeric: tabular-nums;
+}
+
+/* As ofertas chegam em lotes, não de uma vez.
+ *
+ * Sem transição, um lote novo faz três cards materializarem do nada no meio da
+ * lista e a página dar um solavanco. A entrada curta transforma isso em "chegou
+ * mais" — a informação é a mesma, o susto não.
+ *
+ * Como a chave do React é o id da cotação, a animação só roda na montagem de um
+ * card novo: reordenar a lista não a dispara de novo. */
+@keyframes entra {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.entra {
+  animation: entra 220ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .entra {
+    animation: none;
+  }
+}
