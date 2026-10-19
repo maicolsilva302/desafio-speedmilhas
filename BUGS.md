@@ -2,7 +2,7 @@
 
 <!-- Copie o bloco abaixo para cada bug. Gravidade: crítica, alta, média ou baixa. -->
 
-## BUG-01 — tela de reservas não atualiza ao trocar de agência
+## BUG-01 — tela de "detalhes" da reservas não atualiza ao trocar de agência
 
 - **Onde:** tela
 - **Gravidade:** Gravissimo
