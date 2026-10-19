@@ -7,7 +7,7 @@ export interface Pricing {
 }
 
 export function serviceFeeCents(taxesCents: number): number {
-  return Math.round((taxesCents * SERVICE_FEE_PERCENT) / 100);
+  return Math.ceil((taxesCents * SERVICE_FEE_PERCENT) / 100);
 }
 
 export function priceOf(taxesBrl: number): Pricing {

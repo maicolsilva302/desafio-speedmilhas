@@ -37,6 +37,20 @@ export const createOrderSchema = z
       .min(1)
       .max(200),
   })
+  .superRefine((value, ctx) => {
+    const passenger = value.passageiro ?? value.passenger;
+    const name = typeof passenger === 'string'
+      ? passenger.trim()
+      : passenger?.nome?.trim() ?? passenger?.name?.trim();
+
+    if (!name) {
+      ctx.addIssue({
+        code: 'custom',
+        message: 'nome do passageiro é obrigatório',
+        path: ['passageiro', 'nome'],
+      });
+    }
+  })
   .transform((value) => {
     const raw = value.passageiro ?? value.passenger;
     const passenger = typeof raw === 'string' ? { nome: raw } : (raw ?? {});

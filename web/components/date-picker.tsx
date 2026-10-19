@@ -5,7 +5,6 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   INICIAIS_SEMANA,
   gradeDoMes,
-  hojeIso,
   mesmoMes,
   primeiroDoMes,
   rotuloCurto,
@@ -133,7 +132,7 @@ export function DatePicker({
 
   const casas = gradeDoMes(mesVisivel);
   const temMesAnterior = primeiroDoMes(min) < mesVisivel;
-  const hoje = hojeIso();
+  const hoje = min;
 
   return (
     <div ref={raiz} className="relative">

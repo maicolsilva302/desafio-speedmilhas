@@ -5,7 +5,7 @@ const envSchema = z.object({
   SUPPLIERS_BASE_URL: z.string().min(1, 'SUPPLIERS_BASE_URL é obrigatória'),
   PORT: z.coerce.number().int().positive().default(3000),
 
-  SEARCH_BUDGET_MS: z.coerce.number().int().positive().default(5000),
+  SEARCH_BUDGET_MS: z.coerce.number().int().positive().default(4500),
 
   SUPPLIER_A_TIMEOUT_MS: z.coerce.number().int().positive().default(1500),
   SUPPLIER_B_TIMEOUT_MS: z.coerce.number().int().positive().default(8000),

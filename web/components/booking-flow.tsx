@@ -552,7 +552,7 @@ function PassoRevisao({
         <button
           type="button"
           onClick={onConfirmar}
-          disabled={bloqueio !== null}
+          disabled={bloqueio !== null || enviando}
           className="rounded-md bg-brand-600 px-5 py-2 text-sm font-medium text-white transition-colors hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-60"
         >
           {enviando
@@ -718,13 +718,18 @@ function Parada({ papel, code }: { papel: string; code: string }) {
 }
 
 function Prazo({ expiresAt }: { expiresAt: string }) {
-  const [restante, setRestante] = useState(() => segundosAte(expiresAt));
+  const [restante, setRestante] = useState<number | null>(null);
 
   useEffect(() => {
+    setRestante(segundosAte(expiresAt));
     const id = setInterval(() => setRestante(segundosAte(expiresAt)), 1000);
 
     return () => clearInterval(id);
   }, [expiresAt]);
+
+  if (restante === null) {
+    return null;
+  }
 
   if (restante <= 0) {
     return (

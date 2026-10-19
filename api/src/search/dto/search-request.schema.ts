@@ -36,12 +36,12 @@ export const searchRequestSchema = z.preprocess(
         .string({ message: 'origin é obrigatório' })
         .trim()
         .toUpperCase()
-        .length(3, 'origin deve ser o código IATA de 3 letras'),
+        .pipe(z.enum(AIRPORTS, { message: `origin inválido. Aeroportos atendidos: ${AIRPORTS.join(', ')}` })),
       destination: z
         .string({ message: 'destination é obrigatório' })
         .trim()
         .toUpperCase()
-        .length(3, 'destination deve ser o código IATA de 3 letras'),
+        .pipe(z.enum(AIRPORTS, { message: `destination inválido. Aeroportos atendidos: ${AIRPORTS.join(', ')}` })),
       date: z
         .string({ message: 'date é obrigatório' })
         .trim()

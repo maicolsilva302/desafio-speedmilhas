@@ -15,13 +15,14 @@ export function ProgressoBusca({
   startedAt: number;
   compacto?: boolean;
 }) {
-  const [agora, setAgora] = useState(() => Date.now());
+  const [agora, setAgora] = useState(startedAt);
 
   useEffect(() => {
+    setAgora(Date.now());
     const id = setInterval(() => setAgora(Date.now()), 250);
 
     return () => clearInterval(id);
-  }, []);
+  }, [startedAt]);
 
   const porEntrega = total > 0 ? concluidos / total : 0;
   const porTempo = Math.min((agora - startedAt) / TETO_MS, 1);

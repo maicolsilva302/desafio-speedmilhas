@@ -28,13 +28,17 @@ const FALHA_RAPIDA_MS = 2000;
 
 const PARCEIROS_ESPERADOS = 3;
 
-export function SearchScreen() {
-  const [pedido, setPedido] = useState<(Pedido & { versao: number }) | null>(() => {
+export function SearchScreen({ initialDate }: { initialDate: string }) {
+  const [pedido, setPedido] = useState<(Pedido & { versao: number }) | null>(null);
+  const [carregando, setCarregando] = useState<Record<string, boolean>>({});
+
+  useEffect(() => {
     const ultimo = ultimaBusca();
 
-    return ultimo ? { ...ultimo, versao: 0 } : null;
-  });
-  const [carregando, setCarregando] = useState<Record<string, boolean>>({});
+    if (ultimo) {
+      setPedido({ ...ultimo, versao: 0 });
+    }
+  }, []);
 
   const marcarCarregando = useCallback((trecho: string, valor: boolean) => {
     setCarregando((atual) => (atual[trecho] === valor ? atual : { ...atual, [trecho]: valor }));
@@ -48,6 +52,7 @@ export function SearchScreen() {
   return (
     <div className="space-y-5">
       <SearchForm
+        initialDate={initialDate}
         onSearch={buscar}
         loading={Object.values(carregando).some(Boolean)}
       />

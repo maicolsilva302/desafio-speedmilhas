@@ -147,8 +147,8 @@ export class OrdersService {
   }
 
   async findOne(clientId: string, id: string): Promise<OrderResponse> {
-    const order = await this.prisma.order.findUnique({
-      where: { id },
+    const order = await this.prisma.order.findFirst({
+      where: { id, clientId },
       include: { quote: { include: { search: true } } },
     });
 

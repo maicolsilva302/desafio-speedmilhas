@@ -1,4 +1,5 @@
 import { SearchScreen } from '../components/search-screen';
+import { hojeIso } from '../lib/calendar';
 
 export default function Home() {
   return (
@@ -10,7 +11,7 @@ export default function Home() {
         </p>
       </header>
 
-      <SearchScreen />
+      <SearchScreen initialDate={hojeIso()} />
     </main>
   );
 }

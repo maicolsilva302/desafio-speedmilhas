@@ -34,9 +34,12 @@ export const INICIAIS_SEMANA = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'] as const;
 
 export function hojeIso(): string {
   const agora = new Date();
-  const local = new Date(agora.getTime() - agora.getTimezoneOffset() * 60_000);
 
-  return local.toISOString().slice(0, 10);
+  return new Date(
+    Date.UTC(agora.getUTCFullYear(), agora.getUTCMonth(), agora.getUTCDate()),
+  )
+    .toISOString()
+    .slice(0, 10);
 }
 
 function paraData(iso: string): Date {

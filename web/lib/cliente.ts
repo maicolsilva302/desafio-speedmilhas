@@ -1,4 +1,4 @@
-import { useSyncExternalStore } from 'react';
+import { useEffect, useState } from 'react';
 
 const CHAVE = 'speedmilhas:agencia';
 const EVENTO = 'speedmilhas:agencia';
@@ -30,16 +30,22 @@ export function trocarAgencia(id: string): void {
   window.dispatchEvent(new Event(EVENTO));
 }
 
-function assinar(aviso: () => void): () => void {
-  window.addEventListener(EVENTO, aviso);
-  window.addEventListener('storage', aviso);
-
-  return () => {
-    window.removeEventListener(EVENTO, aviso);
-    window.removeEventListener('storage', aviso);
-  };
-}
-
 export function useAgencia(): string | null {
-  return useSyncExternalStore(assinar, agenciaAtual, () => null);
+  const [agencia, setAgencia] = useState<string | null>(null);
+
+  useEffect(() => {
+    const atualizar = () => setAgencia(agenciaAtual());
+
+    atualizar();
+
+    window.addEventListener(EVENTO, atualizar);
+    window.addEventListener('storage', atualizar);
+
+    return () => {
+      window.removeEventListener(EVENTO, atualizar);
+      window.removeEventListener('storage', atualizar);
+    };
+  }, []);
+
+  return agencia;
 }

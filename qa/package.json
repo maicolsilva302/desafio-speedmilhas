@@ -1,0 +1,14 @@
+{
+  "name": "speedmilhas-cypress-cucumber",
+  "private": true,
+  "scripts": {
+    "cy:open": "cypress open --config-file cypress.config.js",
+    "cy:run": "cypress run --config-file cypress.config.js --browser electron",
+    "test:e2e": "cypress run --config-file cypress.config.js --spec 'cypress/e2e/**/*.feature' --browser electron"
+  },
+  "devDependencies": {
+    "@badeball/cypress-cucumber-preprocessor": "^20.0.0",
+    "@bahmutov/cypress-esbuild-preprocessor": "^2.0.0",
+    "cypress": "^13.13.0"
+  }
+}

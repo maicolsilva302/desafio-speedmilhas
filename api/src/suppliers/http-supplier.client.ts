@@ -42,7 +42,8 @@ export abstract class HttpSupplierClient implements SupplierClient {
     };
 
     while (attempts < this.maxAttempts) {
-      const effectiveTimeoutMs = this.perAttemptTimeoutMs;
+      const remainingBudgetMs = deadlineAt - Date.now();
+      const effectiveTimeoutMs = Math.min(this.perAttemptTimeoutMs, remainingBudgetMs);
 
       if (effectiveTimeoutMs <= 0) {
         break;
@@ -71,7 +72,7 @@ export abstract class HttpSupplierClient implements SupplierClient {
         break;
       }
 
-      if (deadlineAt - Date.now() <= this.perAttemptTimeoutMs) {
+      if (deadlineAt - Date.now() <= 0) {
         break;
       }
     }

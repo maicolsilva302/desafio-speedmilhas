@@ -3,23 +3,26 @@
 import { useEffect, useRef, useState } from 'react';
 
 import { AIRPORTS } from '../lib/airports';
-import { hojeIso, somarDias } from '../lib/calendar';
+import { somarDias } from '../lib/calendar';
 import { aquecer } from '../lib/prefetch';
 import type { Pedido } from '../lib/types';
 import { DatePicker } from './date-picker';
 
 export function SearchForm({
+  initialDate,
   onSearch,
   loading,
 }: {
+  initialDate: string;
   onSearch: (pedido: Pedido) => void;
   loading: boolean;
 }) {
   const [origin, setOrigin] = useState('GRU');
   const [destination, setDestination] = useState('GIG');
-  const [date, setDate] = useState(hojeIso);
+  const [date, setDate] = useState(initialDate);
   const [idaEVolta, setIdaEVolta] = useState(false);
-  const [returnDate, setReturnDate] = useState(() => somarDias(hojeIso(), 3));
+  const [returnDate, setReturnDate] = useState(() => somarDias(initialDate, 3));
+  const returnDateInvalid = idaEVolta && returnDate < date;
 
   const jaBuscou = useRef(false);
 
@@ -103,7 +106,7 @@ export function SearchForm({
 
           <DatePicker
             value={date}
-            min={hojeIso()}
+            min={initialDate}
             onChange={setDate}
             rotuladoPor="rotulo-ida"
           />
@@ -120,17 +123,23 @@ export function SearchForm({
 
             <DatePicker
               value={returnDate}
-              min={hojeIso()}
+              min={initialDate}
               onChange={setReturnDate}
               rotuladoPor="rotulo-volta"
             />
           </div>
         )}
 
+        {returnDateInvalid && (
+          <p role="alert" className="text-sm text-warn-700 sm:col-span-2">
+            A data de volta não pode ser anterior à data de ida.
+          </p>
+        )}
+
         <div className="flex items-end sm:col-span-2 sm:justify-end">
           <button
             type="submit"
-            disabled={loading || !destination}
+            disabled={loading || !destination || returnDateInvalid}
             className="h-[38px] w-full whitespace-nowrap rounded-md bg-brand-600 px-5 text-sm font-medium text-white transition-colors hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
           >
             {loading ? 'Buscando…' : 'Buscar passagens'}
